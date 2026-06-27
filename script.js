@@ -41,6 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const footerYear = document.querySelector('.footer p');
     if (footerYear) {
         const currentYear = new Date().getFullYear();
-        footerYear.innerHTML = `&copy; ${currentYear} Zengani Banda. Built with ❤️ for GitHub Pages`;
+        footerYear.innerHTML = `&copy; ${currentYear} Zengani Banda.  <p>&copy; 2026 Zengani Banda. Powered by <a href="https://orison-softworks.github.io/OrisonWorksite/">OrisonWorks</a></p>`;
     }
 });
