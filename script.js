@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
-            // Show loading state
+            // Show loading state and hide button from PDF output
             downloadBtn.innerHTML = `
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 Generating...
             `;
             downloadBtn.disabled = true;
+            downloadBtn.style.display = 'none';
 
             html2pdf().set(opt).from(element).save().then(() => {
                 // Reset button state
@@ -79,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     Download PDF
                 `;
                 downloadBtn.disabled = false;
+                downloadBtn.style.display = '';
             });
         });
     }
