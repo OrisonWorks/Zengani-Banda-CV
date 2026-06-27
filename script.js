@@ -59,41 +59,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 Generating...
             `;
             downloadBtn.disabled = true;
+            downloadBtn.style.display = 'none';
 
-            // Clone the container and remove the download button from the clone
-            // This ensures the button never appears in the generated PDF
             const sourceElement = document.querySelector('.container');
-            const pdfElement = sourceElement.cloneNode(true);
-            const pdfBtn = pdfElement.querySelector('#download-pdf');
-            if (pdfBtn) {
-                pdfBtn.remove();
-            }
-            pdfElement.style.position = 'absolute';
-            pdfElement.style.left = '-9999px';
-            pdfElement.style.top = '-9999px';
-            document.body.appendChild(pdfElement);
+            const sections = sourceElement.querySelectorAll('.section');
+            const originalSectionStyles = [];
+
+            // Ensure all sections are visible for PDF generation
+            sections.forEach((section, index) => {
+                originalSectionStyles[index] = {
+                    opacity: section.style.opacity,
+                    transform: section.style.transform
+                };
+                section.style.opacity = '1';
+                section.style.transform = 'none';
+            });
 
             const opt = {
                 margin: 0,
                 filename: 'Zengani-Banda-CV.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
+                html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
-            html2pdf().set(opt).from(pdfElement).save().then(() => {
-                // Clean up clone and reset button state
-                document.body.removeChild(pdfElement);
+            html2pdf().set(opt).from(sourceElement).save().then(() => {
+                // Restore button state and section styles
+                downloadBtn.style.display = '';
                 downloadBtn.innerHTML = originalBtnText;
                 downloadBtn.disabled = false;
+                sections.forEach((section, index) => {
+                    section.style.opacity = originalSectionStyles[index].opacity;
+                    section.style.transform = originalSectionStyles[index].transform;
+                });
             }).catch(err => {
                 console.error('PDF generation failed:', err);
-                // Clean up clone and reset button state on error
-                if (document.body.contains(pdfElement)) {
-                    document.body.removeChild(pdfElement);
-                }
+                // Restore button state and section styles on error
+                downloadBtn.style.display = '';
                 downloadBtn.innerHTML = originalBtnText;
                 downloadBtn.disabled = false;
+                sections.forEach((section, index) => {
+                    section.style.opacity = originalSectionStyles[index].opacity;
+                    section.style.transform = originalSectionStyles[index].transform;
+                });
                 alert('Failed to generate PDF. Please try again.');
             });
         });
