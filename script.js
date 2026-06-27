@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         '.education-school',
         '.education-period',
         '.project-title',
-        '.skill-tag'
+        '.skill-text'
     ];
 
     if (editModeBtn) {
@@ -60,6 +60,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (saveHtmlBtn) {
                 saveHtmlBtn.style.display = isEditMode ? 'flex' : 'none';
             }
+
+            // Show/hide add buttons
+            document.querySelectorAll('.add-item-btn').forEach(btn => {
+                btn.style.display = isEditMode ? 'flex' : 'none';
+            });
+
+            // Show/hide delete buttons
+            document.querySelectorAll('.delete-item-btn').forEach(btn => {
+                btn.style.display = isEditMode ? 'flex' : 'none';
+            });
 
             // Update button text and style
             if (isEditMode) {
@@ -91,6 +101,115 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Add delete buttons to existing items
+    function createDeleteButton() {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'delete-item-btn';
+        btn.style.display = 'none';
+        btn.innerHTML = `
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+        `;
+        return btn;
+    }
+
+    document.querySelectorAll('.education-item, .project-item').forEach(item => {
+        const deleteBtn = createDeleteButton();
+        deleteBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            item.remove();
+        });
+        item.insertBefore(deleteBtn, item.firstChild);
+    });
+
+    document.querySelectorAll('.skill-tag').forEach(skill => {
+        const deleteBtn = createDeleteButton();
+        deleteBtn.classList.add('delete-skill-btn');
+        deleteBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            skill.remove();
+        });
+        skill.insertBefore(deleteBtn, skill.firstChild);
+
+        // Ensure skill text is wrapped in a span
+        if (!skill.querySelector('.skill-text')) {
+            const textSpan = document.createElement('span');
+            textSpan.className = 'skill-text';
+            while (skill.childNodes.length > 1) {
+                textSpan.appendChild(skill.childNodes[1]);
+            }
+            skill.appendChild(textSpan);
+        }
+    });
+
+    // Add item functionality
+    document.querySelectorAll('.add-item-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const type = this.dataset.type;
+            const section = this.closest('.section');
+            let newItem;
+
+            if (type === 'education') {
+                newItem = document.createElement('div');
+                newItem.className = 'education-item';
+                newItem.innerHTML = `
+                    <div class="education-header">
+                        <h3 class="education-school">School Name</h3>
+                        <span class="education-period">Period</span>
+                    </div>
+                    <p class="education-details">Description</p>
+                `;
+                const deleteBtn = createDeleteButton();
+                deleteBtn.style.display = 'flex';
+                deleteBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    newItem.remove();
+                });
+                newItem.insertBefore(deleteBtn, newItem.firstChild);
+                section.querySelector('.education-item:last-of-type').after(newItem);
+            } else if (type === 'skill') {
+                newItem = document.createElement('div');
+                newItem.className = 'skill-tag';
+                newItem.innerHTML = '<span class="skill-text">New Skill</span>';
+                const deleteBtn = createDeleteButton();
+                deleteBtn.classList.add('delete-skill-btn');
+                deleteBtn.style.display = 'flex';
+                deleteBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    newItem.remove();
+                });
+                newItem.insertBefore(deleteBtn, newItem.firstChild);
+                section.querySelector('.skills-grid').appendChild(newItem);
+            } else if (type === 'experience') {
+                newItem = document.createElement('div');
+                newItem.className = 'project-item';
+                newItem.innerHTML = `
+                    <h3 class="project-title">Job Title</h3>
+                    <p class="project-description">Description</p>
+                `;
+                const deleteBtn = createDeleteButton();
+                deleteBtn.style.display = 'flex';
+                deleteBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    newItem.remove();
+                });
+                newItem.insertBefore(deleteBtn, newItem.firstChild);
+                section.querySelector('.project-item:last-of-type').after(newItem);
+            }
+
+            // Make new item editable
+            if (newItem) {
+                newItem.querySelectorAll('.education-school, .education-period, .education-details, .project-title, .project-description, .skill-text').forEach(el => {
+                    el.contentEditable = true;
+                });
+            }
+        });
+    });
 
     // Save HTML functionality
     if (saveHtmlBtn) {
@@ -129,6 +248,9 @@ document.addEventListener('DOMContentLoaded', function() {
             downloadBtn.style.display = 'none';
             editModeBtn.style.display = 'none';
             saveHtmlBtn.style.display = 'none';
+            document.querySelectorAll('.add-item-btn, .delete-item-btn').forEach(btn => {
+                btn.style.display = 'none';
+            });
 
             const sourceElement = document.querySelector('.container');
             if (!sourceElement) {
@@ -172,6 +294,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 editModeBtn.style.display = '';
                 if (isEditMode) {
                     saveHtmlBtn.style.display = 'flex';
+                    document.querySelectorAll('.add-item-btn, .delete-item-btn').forEach(btn => {
+                        btn.style.display = 'flex';
+                    });
                 }
                 sections.forEach((section, index) => {
                     section.style.opacity = originalSectionStyles[index].opacity;
@@ -186,6 +311,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 editModeBtn.style.display = '';
                 if (isEditMode) {
                     saveHtmlBtn.style.display = 'flex';
+                    document.querySelectorAll('.add-item-btn, .delete-item-btn').forEach(btn => {
+                        btn.style.display = 'flex';
+                    });
                 }
                 sections.forEach((section, index) => {
                     section.style.opacity = originalSectionStyles[index].opacity;

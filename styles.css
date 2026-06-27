@@ -46,6 +46,18 @@ body {
     gap: 2rem;
 }
 
+.header-actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.header-actions .download-btn {
+    margin-top: 0;
+}
+
 .avatar {
     width: 120px;
     height: 120px;
@@ -360,4 +372,98 @@ body {
 [contenteditable="true"]:focus {
     outline: 2px solid rgba(37, 99, 235, 0.8);
     background: rgba(37, 99, 235, 0.05);
+}
+
+/* Edit Mode Buttons */
+.add-item-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+    border: 2px dashed var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 1rem;
+}
+
+.add-item-btn:hover {
+    background: rgba(37, 99, 235, 0.2);
+    transform: translateY(-1px);
+}
+
+.delete-item-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.delete-item-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+.delete-item-btn .icon {
+    width: 16px;
+    height: 16px;
+}
+
+.education-item,
+.project-item {
+    position: relative;
+}
+
+.education-item .delete-item-btn,
+.project-item .delete-item-btn {
+    position: absolute;
+    top: -16px;
+    right: -8px;
+}
+
+.skill-tag {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-right: 0.75rem;
+}
+
+.skill-text {
+    display: inline;
+}
+
+.skill-tag .delete-skill-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border-radius: 50%;
+    padding: 0;
+}
+
+.skill-tag .delete-skill-btn .icon {
+    width: 12px;
+    height: 12px;
+}
+
+@media print {
+    .add-item-btn,
+    .delete-item-btn {
+        display: none !important;
+    }
 }
