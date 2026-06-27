@@ -1,19 +1,5 @@
-// Smooth scroll for navigation
+// CV functionality
 document.addEventListener('DOMContentLoaded', function() {
-    // Add smooth scrolling to all links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-
     // Add animation on scroll
     const observerOptions = {
         threshold: 0.1,
@@ -41,7 +27,88 @@ document.addEventListener('DOMContentLoaded', function() {
     const footerYear = document.querySelector('.footer p');
     if (footerYear) {
         const currentYear = new Date().getFullYear();
-        footerYear.innerHTML = `&copy; ${currentYear} Zengani Banda. Powered by <a href="https://orison-softworks.github.io/OrisonWorksite/">OrisonWorks</a>`;
+        footerYear.innerHTML = `&copy; ${currentYear} Zengani Banda. Powered by <a href="https://orison-softworks.github.io/OrisonWorksite/" rel="noopener noreferrer">OrisonWorks</a>`;
+    }
+
+    // Edit Mode functionality
+    const editModeBtn = document.getElementById('edit-mode');
+    const saveHtmlBtn = document.getElementById('save-html');
+    let isEditMode = false;
+    const editableElements = [
+        '.name',
+        '.title',
+        '.section-content',
+        '.education-details',
+        '.project-description',
+        '.education-school',
+        '.education-period',
+        '.project-title',
+        '.skill-tag'
+    ];
+
+    if (editModeBtn) {
+        editModeBtn.addEventListener('click', function() {
+            isEditMode = !isEditMode;
+
+            editableElements.forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => {
+                    el.contentEditable = isEditMode;
+                });
+            });
+
+            // Show/hide Save HTML button
+            if (saveHtmlBtn) {
+                saveHtmlBtn.style.display = isEditMode ? 'flex' : 'none';
+            }
+
+            // Update button text and style
+            if (isEditMode) {
+                editModeBtn.innerHTML = `
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"></path>
+                    </svg>
+                    Cancel
+                `;
+                editModeBtn.style.background = 'rgba(239, 68, 68, 0.3)';
+                editModeBtn.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+            } else {
+                // Explicitly disable contentEditable when canceling
+                editableElements.forEach(selector => {
+                    document.querySelectorAll(selector).forEach(el => {
+                        el.contentEditable = false;
+                    });
+                });
+
+                editModeBtn.innerHTML = `
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit Mode
+                `;
+                editModeBtn.style.background = '';
+                editModeBtn.style.borderColor = '';
+            }
+        });
+    }
+
+    // Save HTML functionality
+    if (saveHtmlBtn) {
+        saveHtmlBtn.addEventListener('click', function() {
+            try {
+                const updatedHTML = document.documentElement.outerHTML;
+                const blob = new Blob([updatedHTML], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'index.html';
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error('Save HTML failed:', err);
+                alert('Failed to save HTML. Please try again.');
+            }
+        });
     }
 
     // PDF download functionality
@@ -60,8 +127,22 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             downloadBtn.disabled = true;
             downloadBtn.style.display = 'none';
+            editModeBtn.style.display = 'none';
+            saveHtmlBtn.style.display = 'none';
 
             const sourceElement = document.querySelector('.container');
+            if (!sourceElement) {
+                console.error('Container element not found');
+                downloadBtn.style.display = '';
+                downloadBtn.innerHTML = originalBtnText;
+                downloadBtn.disabled = false;
+                editModeBtn.style.display = '';
+                if (isEditMode) {
+                    saveHtmlBtn.style.display = 'flex';
+                }
+                alert('Failed to generate PDF. Container element not found.');
+                return;
+            }
             const sections = sourceElement.querySelectorAll('.section');
             const originalSectionStyles = [];
 
@@ -88,6 +169,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 downloadBtn.style.display = '';
                 downloadBtn.innerHTML = originalBtnText;
                 downloadBtn.disabled = false;
+                editModeBtn.style.display = '';
+                if (isEditMode) {
+                    saveHtmlBtn.style.display = 'flex';
+                }
                 sections.forEach((section, index) => {
                     section.style.opacity = originalSectionStyles[index].opacity;
                     section.style.transform = originalSectionStyles[index].transform;
@@ -98,6 +183,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 downloadBtn.style.display = '';
                 downloadBtn.innerHTML = originalBtnText;
                 downloadBtn.disabled = false;
+                editModeBtn.style.display = '';
+                if (isEditMode) {
+                    saveHtmlBtn.style.display = 'flex';
+                }
                 sections.forEach((section, index) => {
                     section.style.opacity = originalSectionStyles[index].opacity;
                     section.style.transform = originalSectionStyles[index].transform;
