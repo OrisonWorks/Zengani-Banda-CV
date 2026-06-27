@@ -37,10 +37,10 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(section);
     });
 
-    // Add current year to footer
+    // Add current year to footer while preserving OrisonWorks attribution
     const footerYear = document.querySelector('.footer p');
     if (footerYear) {
         const currentYear = new Date().getFullYear();
-        footerYear.innerHTML = `&copy; ${currentYear} Zengani Banda. Built with ❤️ for GitHub Pages`;
+        footerYear.innerHTML = `&copy; ${currentYear} Zengani Banda. Powered by <a href="https://orison-softworks.github.io/OrisonWorksite/">OrisonWorks</a>`;
     }
 });
