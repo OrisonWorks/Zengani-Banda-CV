@@ -43,7 +43,10 @@ document.addEventListener('DOMContentLoaded', function() {
         '.education-school',
         '.education-period',
         '.project-title',
-        '.skill-text'
+        '.skill-text',
+        '.reference-name',
+        '.reference-title',
+        '.reference-contact'
     ];
 
     if (editModeBtn) {
@@ -117,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return btn;
     }
 
-    document.querySelectorAll('.education-item, .project-item').forEach(item => {
+    document.querySelectorAll('.education-item, .project-item, .reference-item').forEach(item => {
         const deleteBtn = createDeleteButton();
         deleteBtn.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -200,11 +203,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 newItem.insertBefore(deleteBtn, newItem.firstChild);
                 section.querySelector('.project-item:last-of-type').after(newItem);
+            } else if (type === 'reference') {
+                newItem = document.createElement('div');
+                newItem.className = 'reference-item';
+                newItem.innerHTML = `
+                    <h3 class="reference-name">Reference Name</h3>
+                    <p class="reference-title">Position, Company</p>
+                    <p class="reference-contact">
+                        <a href="mailto:email@example.com">email@example.com</a> | 
+                        <a href="tel:+260123456789">+260 123 456 789</a>
+                    </p>
+                `;
+                const deleteBtn = createDeleteButton();
+                deleteBtn.style.display = 'flex';
+                deleteBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    newItem.remove();
+                });
+                newItem.insertBefore(deleteBtn, newItem.firstChild);
+                section.querySelector('.reference-item:last-of-type').after(newItem);
             }
 
             // Make new item editable
             if (newItem) {
-                newItem.querySelectorAll('.education-school, .education-period, .education-details, .project-title, .project-description, .skill-text').forEach(el => {
+                newItem.querySelectorAll('.education-school, .education-period, .education-details, .project-title, .project-description, .skill-text, .reference-name, .reference-title, .reference-contact').forEach(el => {
                     el.contentEditable = true;
                 });
             }

@@ -274,6 +274,47 @@ body {
     line-height: 1.7;
 }
 
+.reference-item {
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.reference-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.reference-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.reference-title {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.reference-contact {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.reference-contact a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.reference-contact a:hover {
+    text-decoration: underline;
+}
+
 .footer {
     background: var(--bg-secondary);
     color: var(--text-secondary);
